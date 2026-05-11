@@ -102,11 +102,17 @@ Garantizar consistencia de la representación textual en todo el sistema.
 
 English Translation 
 I. System Architecture
+
+
 The system is structured into five main modules, clearly separating four fundamental responsibilities —knowledge preparation, information retrieval, flow orchestration, and response generation— supported by a cross-cutting shared tokenization module.
+
 First, the Ingestion and Indexing Module is responsible for building the system’s knowledge base. To do so, it processes documents, splits them into chunks, tokenizes them using the shared Tokenizer Module, and generates their vector representations using an encoder-only language model (such as BERT). These embeddings are then stored in a vector database for use during the retrieval phase.
+
 Second, the Retrieval Module is responsible for retrieving relevant context. This module receives queries (or sub-queries) already tokenized by the Tokenizer Module, generates their embeddings using the same encoder-only model, and performs similarity search over the vector database to identify the most relevant chunks, typically using efficient retrieval techniques such as Approximate Nearest Neighbor (ANN).
+
 Third, the Orchestration Module acts as the central control layer of the system. This module receives the user query and dynamically determines the processing strategy. Optionally, it may activate a planning phase based on an LLM, which performs query decomposition to break the query into semantically independent sub-queries. The planning LLM is the same decoder-only model later used for response generation, operating in a differentiated planning mode through specific instructions. When this phase is not activated, the system operates directly on the original query.
 Once the strategy is defined, the Orchestrator invokes the Tokenizer Module, which converts the query or sub-queries into token sequences. The tokenized sub-queries are then sent to the Retrieval Module, which generates their embeddings using the same encoder-only model and performs similarity search in the vector database to retrieve relevant chunks. Finally, the Orchestrator aggregates and consolidates the retrieved results to build the final prompt, which is passed to the Generation Module to produce the response.
+
 Finally, the Tokenizer Module is a cross-cutting shared component, used by both the Ingestion and Indexing Module and the Orchestration Module. Its function is to ensure a consistent textual representation across all system phases, aligning the tokenization used for embedding generation and prompt construction.
 Overall, the system is not limited to the interaction between two language models but is organized as a modular architecture in which two LLMs with differentiated roles operate in coordination —an encoder-only model for semantic representation through embeddings and a decoder-only model for response generation— together with specialized modules that manage indexing, retrieval, orchestration, and context preparation.
 
