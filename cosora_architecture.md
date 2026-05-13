@@ -100,6 +100,21 @@ Garantizar consistencia de la representación textual en todo el sistema.
 - Tokenización de documentos (Ingestion and Indexing Module).
 - Tokenización de queries y sub-queries (Orchestration Module)
 
+## III. LLMs
+
+### 1. LLM encoder-only para generar los embeddings
+
+Se propone [BSC-LT/MrBERT-es](https://huggingface.co/BSC-LT/MrBERT-es) como encoder por su optimización específica para español y su arquitectura moderna orientada a retrieval, lo que permite generar embeddings semánticamente más precisos en dominios en español frente a alternativas multilingües genéricas.
+
+### 2. LLM decoder-only para generar las respuestas
+
+Un modelo GPT pendiente de determinar.
+
+## IV. Base de datos vectorial
+
+Se propone [ChromaDB](https://www.trychroma.com/products/chromadb) como base de datos vectorial por su simplicidad de integración, ya que funciona de forma embebida en Python sin necesidad de infraestructura adicional, lo que facilita el desarrollo rápido de prototipos RAG. Además, permite persistencia local eficiente de embeddings y consultas por similitud, siendo una opción ligera y suficiente para sistemas en fase inicial o de experimentación.
+
+
 English Translation 
 I. System Architecture
 
