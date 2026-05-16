@@ -1,0 +1,60 @@
+# Gitignore for RAG-UPCSchool-Project
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.python-version
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.Python
+
+# IDEs
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/chroma_db/
+notebooks/chroma_db/*
+
+# Databases
+*.sqlite3
+*.db
+
+# Data and artifacts
+data/
+build/
+dist/
+*.egg-info/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# User-requested
+docs/
+bin/
+*.json
+
+# Secrets and environment
+.env
+.env.*
+secrets.*
+credentials.*
+
+# Misc
+*.pem
+*.key
+*.coverage
+.coverage
