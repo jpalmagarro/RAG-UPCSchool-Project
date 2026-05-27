@@ -107,6 +107,6 @@ To ensure consistency of textual representation across the entire system.
 
 A GPT model pending to be specified
 
-## IV. Base de datos vectorial
+## IV. Vector database
 
 [ChromaDB](https://www.trychroma.com/products/chromadb) is proposed as the vector database due to its ease of integration, as it runs embedded in Python without requiring additional infrastructure, which facilitates rapid RAG prototyping. Furthermore, it enables efficient local persistence of embeddings and similarity queries, making it a lightweight and sufficient option for early-stage or experimental systems.

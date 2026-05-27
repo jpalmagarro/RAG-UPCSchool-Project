@@ -108,8 +108,9 @@ Se propone [BSC-LT/MrBERT-es](https://huggingface.co/BSC-LT/MrBERT-es) como enco
 
 ### 2. LLM decoder-only para generar las respuestas
 
-Un modelo GPT pendiente de determinar.
+pendiente
 
 ## IV. Base de datos vectorial
 
 Se propone [ChromaDB](https://www.trychroma.com/products/chromadb) como base de datos vectorial por su simplicidad de integración, ya que funciona de forma embebida en Python sin necesidad de infraestructura adicional, lo que facilita el desarrollo rápido de prototipos RAG. Además, permite persistencia local eficiente de embeddings y consultas por similitud, siendo una opción ligera y suficiente para sistemas en fase inicial o de experimentación.
+
