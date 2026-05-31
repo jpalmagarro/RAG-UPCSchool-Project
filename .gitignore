@@ -50,6 +50,7 @@ bin/
 # Secrets and environment
 .env
 .env.*
+!.env.example
 secrets.*
 credentials.*
 
