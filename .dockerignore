@@ -1,0 +1,10 @@
+.git
+.env
+data/raw/
+venv/
+.venv/
+__pycache__/
+*.ipynb
+*.pyc
+.conda/
+.cursor/

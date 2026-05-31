@@ -1,0 +1,11 @@
+.git
+.env
+data/
+venv/
+.venv/
+__pycache__/
+*.ipynb
+*.pyc
+credentials.json
+.conda/
+.cursor/

@@ -1,0 +1,30 @@
+steps:
+  # 0. Crear el directorio destino primero (gsutil falla si no existe)
+  - name: 'ubuntu'
+    args: ['mkdir', '-p', './data/chroma_db']
+    id: 'create-dirs'
+
+  # 1. Descargar la base de datos desde el Bucket de Google Cloud Storage
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['cp', '-r', 'gs://${_BUCKET_NAME}/chroma_db', './data/']
+    id: 'download-chroma-db'
+    waitFor: ['create-dirs']
+
+  # 2. Construir la imagen Docker usando la base de datos descargada localmente en la build
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/cosora-demo', '.']
+    id: 'build-docker-image'
+    waitFor: ['download-chroma-db']
+
+  # 3. Subir la imagen Docker al Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/cosora-demo']
+    id: 'push-docker-image'
+    waitFor: ['build-docker-image']
+
+# Definimos que el servicio usará la variable externa _BUCKET_NAME
+substitutions:
+  _BUCKET_NAME: 'rag-actas-db-bucket' # Valor por defecto, se puede sobrescribir al lanzar build
+
+options:
+  logging: CLOUD_LOGGING_ONLY

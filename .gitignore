@@ -64,3 +64,7 @@ architecture/cosora_architecture_final.md
 architecture/implementation_plan.md
 
 scratch_outputs.txt
+.cursor/
+.conda/
+.vscode/
+.env
