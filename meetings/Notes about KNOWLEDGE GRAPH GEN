@@ -1,0 +1,19 @@
+KGs consist of a set of subject-predicate-object triples, and have become a fundamental data structure for information retrieval. Most real-world KGs, including Wikidata DBpedia and YAGO.  are far from complete, with many missing relations between entities.
+To solve this problem, we propose KGGen, a text-to-knowledge-graph generator that leverages language models (LMs) and an algorithm for entity and edge resolution to extract high-quality, dense KGs from text. First, KGGen uses an LM-based extractor to read unstructured text and predict subject-predicate-object triples to capture entities and relations; after extracting the triples, it applies a novel, iterative clustering algorithm to refine the raw graph. Inspired by crowd-sourcing strategies for entity resolution, KGGen identifies nodes that refer to the same underlying entities, and consolidates edges that have equivalent meanings.
+The nascent field of plain-text-to-knowledge graph extraction currently lacks benchmarks to measure the fidelity of KG generation from text. To close this gap, we provide two new benchmarks: the first captures information retention from short texts; the second, based on WikiQA, measures knowledge retrieval capabilities for graphs generated from multi-million token, web-based knowledge databases.
+On these benchmarks, KGGen performs comparably to GraphRAG. However, KGGen exhibits far better scaling properties with respect to information compression and graph sparsity as the plain-text database length increases.
+Existing Methods
+two popular existing methods for extracting KGs from plain text:
+•	Open Information Extraction (OpenIE) was implemented by Stanford CoreNLP.
+•	GraphRAG, developed by Microsoft in 2024, integrates graph-based knowledge retrieval with language models (LMs).
+Entity and Relation Extraction
+The first stage takes unstructured text as input and produces an initial knowledge graph as extracted triples. We use Google’s Gemini 2.0 Flash as the language model to provide structured output via DSPy signatures. The first step takes in source text and extracts a list of entities. Given the source text and entities list, the second step outputs a list of subject-predicate-object relations. 
+Aggregation
+After extracting triples from each source text, we collect all the unique entities and edges across all source graphs and combine them into a single graph. All entities and edges are normalized to be in lowercase letters only. The aggregation step reduces redundancy in the KG. Aggregation step does not require an LLM.
+Entity and Edge Resolution
+After extraction and aggregation, it typically have a raw graph containing duplicate or synonymous entities and possibly redundant edges. The resolution stage merges nodes and edges representing the same real-world entity or concept. The resolution process employs a two-stage approach combining embedding-based clustering with LLMbased de-duplication to efficiently handle large knowledge graphs. 
+First, all items in the graph are clustered. We get the semantic embeddings of every item using S-BERT and cluster using k-means into clusters of 128 items.
+1. For each item in a cluster, we retrieve the top-k most semantically similar items, where k=16, using a fused BM25 and semantic embedding approach.
+2. Then, the LLM is prompted to identify exact duplicates from this set, considering variations in tense, plurality, case, abbreviations, and shorthand forms.
+3. For each set of duplicates, the LLM selects a canonical representative that best captures the shared meaning, similar to aliases that Wikidata uses. Cluster maps track which entities belong to which alias.
+4. The item and its duplicates are removed from the cluster and steps 1-3 repeat until no items remain in the cluster.
