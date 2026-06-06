@@ -1,0 +1,14 @@
+graph RAG: el que crees es un knowledge graph. La diferencia es que si tu fas una consulta a la bd et retorna nomes el que fa referejncia la query. Amb gnn el que fa es un vector search, i aqui fem emmedings pels nodes i les conexions. Això et permet veure noeves relacions i tenir un reasoning sobre el que preguntes. 
+Entrant en detall, el graph rag no entrenable es el knowledge graph, que nomes retorna el que estigui a la BD. La diferencia és que aquí va estructurat, a la BD vectorial no. Això s'aprofita perque representa que al estar estructurat el sistema et pot resoldre queries millorades. PERO això NO s'entrena. La hipotesi de que els knowledge graph son dificils podem fer knowledge graph emmbedings, i tu tens nodes i conexions, on el sistema et treu emmbedings pels nodes i vectors. LLavors la búsqueda és d'emmbedings. I aqui els resultats ja no son el que tinguis a la BD, sino que poden inferir altres conclusions que a la BD encara no tens. 
+
+Aqui hauriem de definit tots els tipus d'entitats que volem que reconegui el GNN. Poden ser incidencies, temes de planificació, etc. I relacions entre aquestes entitats. Cada entitat pot tenir atributs. 
+
+També hi ha l'opcio del reranking, i és més fàcil, pero canvia el tipus de pregunta que podem contestar, res de quantes incidencies hi ha. Com a consell veient la data faria algo així. 
+
+
+No canvia massa de tot el que vem dir el meeting passat. Però per ara necessitem tenir pel dia 1 ja el rag ben fet, i presentar un rag que funcioni. Amb això podem presentar la idea i dir que estem plantejant de fer un reranking o un graph rag. 
+
+
+Per tant, ara necessitem tenir el ja la api a open ai i conectarlo per tenirho tot.
+
+
