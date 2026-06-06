@@ -18,11 +18,11 @@ ENV/
 # IDEs
 .vscode/
 .idea/
+.cursor/
 
 # Jupyter
 .ipynb_checkpoints/
 notebooks/chroma_db/
-notebooks/chroma_db/*
 
 # Databases
 *.sqlite3
@@ -42,11 +42,6 @@ logs/
 .DS_Store
 Thumbs.db
 
-# User-requested
-docs/
-bin/
-*.json
-
 # Secrets and environment
 .env
 .env.*
@@ -59,12 +54,11 @@ credentials.*
 *.key
 *.coverage
 .coverage
-
-architecture/cosora_architecture_final.md
-architecture/implementation_plan.md
-
-scratch_outputs.txt
-.cursor/
 .conda/
-.vscode/
-.env
+
+# Generated docs (not the docs/ folder itself)
+docs/architecture/cosora_architecture_final.md
+docs/architecture/implementation_plan.md
+
+# Scratch
+scratch_outputs.txt
