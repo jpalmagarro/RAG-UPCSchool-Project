@@ -142,32 +142,17 @@ def is_bad_chunk(chunk, min_words=40, min_alpha_ratio=0.65):
     return alpha_ratio < min_alpha_ratio
 
 def chunk_text(text, chunk_size=500, overlap=100, min_chunk_size=50):
-    chunks = []
     if not text:
-        return chunks
-    stride = chunk_size - overlap
-    start = 0
-    text_len = len(text)
-    while start < text_len:
-        end = min(start + chunk_size, text_len)
-        if end < text_len:
-            search_from = start + int(chunk_size * 0.8)
-            best = -1
-            for punct in ".!?;":
-                pos = text.rfind(punct, search_from, end)
-                if pos > best:
-                    best = pos
-            if best != -1:
-                end = best + 1
-            else:
-                space = text.rfind(" ", search_from, end)
-                if space != -1:
-                    end = space
-        chunk = text[start:end].strip()
-        if len(chunk) >= min_chunk_size and not is_bad_chunk(chunk):
-            chunks.append(chunk)
-        start += stride
-    return chunks
+        return []
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=overlap,
+        separators=["\n\n", "\n", ". ", " ", ""],
+        length_function=len,
+    )
+    raw_chunks = splitter.split_text(text)
+    return [c for c in raw_chunks if len(c) >= min_chunk_size and not is_bad_chunk(c)]
 
 def extract_docx(filepath):
     try:
