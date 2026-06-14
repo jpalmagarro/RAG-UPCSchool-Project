@@ -1,0 +1,15 @@
+Rewriting
+══════════════════════════════════════════════════════════════════════
+QUERY ORIGINAL: ¿Por qué motivo se vio limitado el avance de producción durante la semana de ejecución de muros de andén?
+📝 Queries reescritas:
+  1. muros de andén, avance de producción, limitaciones, causas, estado de obra, roles, incidencias, hormigonado, encofrado, micropilotes, UTE, DO
+  2. ¿Cuáles fueron las razones que restringieron el progreso en la construcción de los muros del andén durante la semana de ejecución?
+  3. ¿Qué factores técnicos o logísticos afectaron el avance en la ejecución de los muros de andén durante la semana correspondiente?
+📊 Chunks recuperados — original: 7 | multi-query: 10 | overlap: 2
+──────────────────────────────────────────────────────────────────────
+RESPUESTA (query original):
+1. Durante la semana de ejecución de los muros de andén, el avance de producción se vio limitado debido a las lluvias, lo que apenas permitió trabajar en las obras. (Fuente: 254275-DO-AVO-15-V07)
+──────────────────────────────────────────────────────────────────────
+RESPUESTA (multi-query reescrito):
+1. Durante la semana de ejecución de los muros de andén, el avance de producción se vio limitado debido a las lluvias, lo que impidió trabajar de manera efectiva en las obras planificadas. (Fuente: 254275-DO-AVO-15-V07, 254275-DO-AVO-21-V01)
+══════════════════════════════════════════════════════════════════════
