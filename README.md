@@ -163,10 +163,19 @@ The objective encourages the model to assign higher scores to positive pairs whi
 
 ## 3.2 Knowledge graph pipeline
 
-A graph-based information-extraction methodology that turns unstructured reports into a structured
-knowledge representation, following four stages:
+The knowledge graph was built in two iterations:
 
-1. **Document ingestion & preprocessing** — `.doc`/`.docx` → plain text (`python-docx`, `textract`).
+- **v1 (exploration):** prompt-based extraction with a local LLM (Ollama + Gemma 3), developed in the
+  `notebooks/query_pipeline_grapgRAG_def_prompt_Gemma3*.ipynb` notebooks and evaluated in Experiments 4–6.
+- **v2 (final):** **KGGen** (`kg-gen` + `gpt-4o-mini`) run per Chroma chunk in
+  [kg_ingest_v2.ipynb](notebooks/experiments/kg_ingest_v2.ipynb), which writes the graph as JSON. The
+  graph-sync job ([src/sync_graph.py](src/sync_graph.py)) then loads that JSON from Drive or GCS into
+  **Neo4j Aura**, where the demo queries it.
+
+The v1 methodology turns unstructured reports into a structured knowledge representation in four stages:
+
+1. **Document ingestion & preprocessing** — `.doc`/`.docx` → plain text (`python-docx`, `textract` in the
+   notebooks; `antiword` in the production ingestion, [src/ingest.py](src/ingest.py)).
 2. **Entity extraction** — prompt-based extraction with a local LLM (Ollama + Gemma 3).
 3. **Relation extraction** — a second prompt enforces strict `(entity1, relation, entity2)` triples.
 4. **Graph construction & consolidation** — normalization, deduplication and state prioritization,
@@ -494,7 +503,9 @@ The production demo runs **serverless on Google Cloud Platform** (`europe-west1`
 | Job                 | Input                | Output                                                   |
 | ------------------- | -------------------- | -------------------------------------------------------- |
 | **ingest job**      | Site reports (Drive) | Chroma + BM25 + reranker → **GCS**                       |
-| **kg-pipeline job** | Site reports (Drive) | KGGen extraction → graph JSON → **GCS** + **Neo4j Aura** |
+| **graph-sync job**  | Graph JSON (Drive)   | Catalog → **Neo4j Aura** + JSON copy in **GCS**          |
+
+The graph JSON is produced beforehand with KGGen in [kg_ingest_v2.ipynb](notebooks/experiments/kg_ingest_v2.ipynb) (see §3.2).
 
 **Online (Cloud Run service):** Streamlit demo loads the index from GCS and, at query time, runs hybrid retrieval (Chroma + BM25), Graph-RAG (Neo4j), and answer generation (OpenAI).
 
@@ -596,7 +607,17 @@ Cloud Run Job equivalent: [deploy/scripts/deploy_job.ps1](deploy/scripts/deploy_
 
 ### 4.6 Knowledge graph pipeline
 
-The **`kg-pipeline` Cloud Run Job** reads actas from Drive, runs **KGGen** (`kg-gen` + **gpt-4o-mini**) per Chroma chunk, writes graph JSON to **GCS**, and loads **Neo4j Aura** in the same run. See [§3.3 GCP deployment](#33-gcp-deployment).
+Two steps:
+
+1. **Extraction (notebook):** [kg_ingest_v2.ipynb](notebooks/experiments/kg_ingest_v2.ipynb) runs **KGGen** (`kg-gen` + **gpt-4o-mini**) per Chroma chunk and writes the graph as JSON.
+2. **Load (Cloud Run Job `cosora-graph-sync-job`):** [src/sync_graph.py](src/sync_graph.py) reads that JSON from Drive or GCS, refreshes the catalog and loads **Neo4j Aura**. Deploy: [deploy/scripts/deploy_graph_sync_job.ps1](deploy/scripts/deploy_graph_sync_job.ps1).
+
+```bash
+python src/sync_graph.py --from-drive --sync-neo4j --upload-gcs   # default Cloud Run Job
+python src/sync_graph.py --from-gcs --sync-neo4j                  # reload from GCS
+```
+
+See [§3.3 GCP deployment](#33-gcp-deployment).
 
 ### 4.7 Deploy to GCP (optional)
 
@@ -606,7 +627,7 @@ Serverless stack: **Cloud Build** → **Container Registry** → **Cloud Run** (
 | -------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | [deploy/scripts/deploy.ps1](deploy/scripts/deploy.ps1)         | Streamlit demo (`cosora-demo`) on Cloud Run (8 GiB RAM, 4 vCPU, `europe-west1`) |
 | [deploy/scripts/deploy_job.ps1](deploy/scripts/deploy_job.ps1) | Ingestion job (`cosora-ingest-job`): Drive → Chroma → GCS                       |
-| `kg-pipeline job`                                              | KGGen extraction → GCS + Neo4j (see §3.3)                                       |
+| [deploy/scripts/deploy_graph_sync_job.ps1](deploy/scripts/deploy_graph_sync_job.ps1) | Graph-sync job (`cosora-graph-sync-job`): graph JSON → Neo4j Aura (see §4.6) |
 
 **Deploy the web app** (from repo root, with `.env` containing `OPENAI_API_KEY`, `APP_PASSWORD`, `NEO4J_URI`, `NEO4J_PASSWORD`):
 
@@ -647,6 +668,10 @@ Key notebooks (v2):
 Each experiment is documented with **Hypothesis**, **Setup**, **Results** and **Conclusions**.
 
 ## 5.1 Retrieval experiments
+
+> **Note on the figures.** The tables in this section come from the runs documented for the final report.
+> The outputs saved in the notebooks come from other runs with different settings (for example, the
+> LLM-judge scale or the hardware), so their numbers do not match these tables exactly.
 
 ### Experiment 1 — Choosing the embedding model
 
